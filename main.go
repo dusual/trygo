@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	josephus.Simulate(5)
+	josephus.Simulate(6)
 }

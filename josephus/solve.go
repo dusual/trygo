@@ -14,7 +14,19 @@ type jCircle struct {
 	sword  int
 }
 
-func makeJCircle(totalAlive int, sword int) *jCircle {
+func (self *jCircle) findSword(sword_pos int) {
+	r := self.circle
+	for i := 0; i < r.Len(); i++ {
+		person := r.Value.(Person)
+		if person.pos == sword_pos {
+			r = r.Next()
+			break
+		}
+	}
+	self.circle = r
+}
+
+func makeJCircle(totalAlive int) *jCircle {
 	j := jCircle{size: totalAlive, circle: ring.New(totalAlive)}
 	return &j
 }
@@ -33,7 +45,34 @@ func (self *jCircle) populate() {
 }
 
 func (self *jCircle) killNext() int {
+	var person Person
+	current_person := self.circle
+	done := false
+	for done != true {
+		current_person.Next()
+		person = current_person.Value.(Person)
+		if person.isAlive == true {
+			person.isAlive = false
+			done = true
+		}
 
+	}
+	return person.pos
+}
+
+func (self *jCircle) passSword() int {
+	var person Person
+	current_person := self.circle
+	done := false
+	for done != true {
+		current_person.Next()
+		person = current_person.Value.(Person)
+		if person.isAlive == true {
+			done = true
+		}
+
+	}
+	return person.pos
 }
 
 func Simulate(totalAlive int) {
@@ -41,12 +80,16 @@ func Simulate(totalAlive int) {
 	j.populate()
 	fmt.Println(j)
 	fmt.Println(j.size)
+	sword_pos := 0
 	for totalAlive > 1 {
-
-		j.killNext()
+		j.findSword(sword_pos)
+		//		killed = j.killNext()
+		//		j.findSword(killed)
+		//		sword_pos = j.passSword()
 		//jCircle.killNext()
 		//jCircle.passSword()
 		totalAlive--
 	}
+	fmt.Println(j.circle.Value)
 	return
 }
